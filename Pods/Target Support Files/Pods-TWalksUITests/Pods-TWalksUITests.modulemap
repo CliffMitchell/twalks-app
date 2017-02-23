@@ -1,0 +1,6 @@
+framework module Pods_TWalksUITests {
+  umbrella header "Pods-TWalksUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}

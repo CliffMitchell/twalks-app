@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11759" systemVersion="16D32" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="SavedRoute" representedClassName="SavedRoute" syncable="YES" codeGenerationType="class">
+        <attribute name="routeCategoryName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="routeDesc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="routeDetails" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="routeDistance" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="routeGPXFileName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="routeID" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="routeImageCaption" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="routeImageDesc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="routeImageFile" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="routeName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="routeTime" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="sectionCount" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+    </entity>
+    <entity name="SavedRouteImages" representedClassName="SavedRouteImages" syncable="YES" codeGenerationType="class">
+        <attribute name="appImage" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="fk_idImage" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="fk_idRoute" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="idRouteImage" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="imageCaption" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="imageDesc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="imageFile" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="routeDesc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="routeName" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="SavedRouteList" representedClassName="SavedRouteList" syncable="YES" codeGenerationType="class">
+        <attribute name="routeCategory" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="routeCategoryName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="routeDistance" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="routeID" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="routeImageFile" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="routeName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="routeTime" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+    </entity>
+    <entity name="SavedRouteMarkers" representedClassName="SavedRouteMarkers" syncable="YES" codeGenerationType="class">
+        <attribute name="markerlat" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="markerlon" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="markername" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="markerseq" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="routeID" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+    </entity>
+    <entity name="SavedRouteSections" representedClassName="SavedRouteSections" syncable="YES" codeGenerationType="class">
+        <attribute name="idRoute" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="idRouteSection" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="idSection" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="routeSectionSeq" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="sectionDesc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="sectionName" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="SavedSectionImages" representedClassName="SavedSectionImages" syncable="YES" codeGenerationType="class">
+        <attribute name="fk_idImage" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="fk_idRoute" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="fk_idSection" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="idSectionImage" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="imageCaption" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="imageDesc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="imageFile" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="sectionName" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="SavedRoute" positionX="-63" positionY="36" width="128" height="223"/>
+        <element name="SavedRouteList" positionX="-63" positionY="-18" width="128" height="148"/>
+        <element name="SavedRouteMarkers" positionX="-63" positionY="99" width="128" height="120"/>
+        <element name="SavedRouteSections" positionX="-63" positionY="99" width="128" height="135"/>
+        <element name="SavedSectionImages" positionX="-54" positionY="108" width="128" height="165"/>
+        <element name="SavedRouteImages" positionX="-54" positionY="108" width="128" height="180"/>
+    </elements>
+</model>

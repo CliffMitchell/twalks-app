@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SchemeUserState</key>
+	<dict>
+		<key>ImageScrollView.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Kingfisher.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-TWalks.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-TWalksTests.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-TWalksUITests.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>4D94A3909F870C7B7DF7225497BA74EE</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B1FBB3DA549F4E64345B3BB249177450</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>BDAF27BE15DBEE3F66D84079233BDDFA</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C2E0D27EE795FC3C71EF15659D462C3C</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D54C0375E79D94E625A9488B0053A251</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+	</dict>
+</dict>
+</plist>

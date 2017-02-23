@@ -1,0 +1,15 @@
+PODS:
+  - ImageScrollView (1.3)
+  - Kingfisher (3.0.1)
+
+DEPENDENCIES:
+  - ImageScrollView (~> 1.3)
+  - Kingfisher (~> 3.0)
+
+SPEC CHECKSUMS:
+  ImageScrollView: 2f2d7139fb5a7d0c0b021eb8b086d8c3dc54c233
+  Kingfisher: d5a491b45ea453d90a31bd2c0831d5243e73a73f
+
+PODFILE CHECKSUM: 87f45faa657c97281bcbe280c28174f024585ab3
+
+COCOAPODS: 1.0.1

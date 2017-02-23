@@ -1,0 +1,6 @@
+framework module Pods_TWalks {
+  umbrella header "Pods-TWalks-umbrella.h"
+
+  export *
+  module * { export * }
+}
