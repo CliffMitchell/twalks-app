@@ -23,11 +23,23 @@ class MasterViewController: UITableViewController {
     var remotedbversionid:Int = 0
     var remotedbversiondate:String = ""
     var routeupdated:Bool = false
+    var storedLabelText:String = ""
+    
+    // Create new SectionModel
+    var sectionModel:SectionModel = SectionModel()
+    var sectionsArray:[Section] = [Section]()
+    var sectionImagesDictArray:[NSDictionary] = [NSDictionary]()
 
     let launchedBefore = UserDefaults.standard.bool(forKey: "launchedBefore")
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Add an Info button to the navigation bar
+        let infoButton = UIButton(type: .infoLight )
+        infoButton.addTarget(self, action: #selector(infoButtonTapped(sender:)), for: .touchDown)
+        let navButtonItem = UIBarButtonItem(customView: infoButton )
+        navigationItem.rightBarButtonItem = navButtonItem
         
         self.splitViewController?.preferredDisplayMode = .allVisible
         
@@ -191,7 +203,7 @@ class MasterViewController: UITableViewController {
         //print("Memory warning 1 ...")
         
         DispatchQueue.main.async(execute: {
-            let alertController:UIAlertController = UIAlertController(title: "Memory Error", message: "It looks like there is insufficient storage on you device to store the route details. Please free up some space and try again.", preferredStyle: UIAlertControllerStyle.alert)
+            let alertController:UIAlertController = UIAlertController(title: "Memory Error", message: "It looks like there is insufficient storage on your device to store the route details. Please free up some space and try again.", preferredStyle: UIAlertControllerStyle.alert)
             let cancelAction:UIAlertAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: { (action) -> Void in
                 
                 // Actions to take when OK is pressed.
@@ -227,6 +239,10 @@ class MasterViewController: UITableViewController {
                 controller.detailItem = selectedRoute.routeID as AnyObject?
                 controller.selectedRoute = selectedRoute
                 controller.routeupdated = routeupdated
+                controller.sectionsArray = sectionsArray
+                controller.sectionImagesDictArray = sectionImagesDictArray
+                controller.storedLabelText = storedLabelText
+                
                 
                 controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem
                 controller.navigationItem.leftItemsSupplementBackButton = true
@@ -239,6 +255,11 @@ class MasterViewController: UITableViewController {
             destinationViewController.title = "Connection Error"
             //let errorText:String = "It looks like there is no active internet connection and no stored version of this route, so we are unable to display your selected route."
             destinationViewController.errorLabelText = "It looks like there is no internet connection and no stored version of this route."
+        }
+        else if segue.identifier == "showMainInfoSegue" {
+            let destinationViewController = segue.destination as! InfoViewController
+            destinationViewController.title = "TWalks Info"
+            
         }
     }
     
@@ -258,7 +279,7 @@ class MasterViewController: UITableViewController {
         alert.view.addSubview(loadingIndicator)
         present(alert, animated: true, completion: nil)
         
-        DispatchQueue.main.async(execute: {
+        DispatchQueue.global(qos: .userInitiated).async(execute: {
             
             if let indexPath = self.tableView.indexPathForSelectedRow {
                 // Get the selected route
@@ -294,7 +315,14 @@ class MasterViewController: UITableViewController {
                         // Get the stored route image array
                         self.selectedRoute.routeImageDictArray = self.routeModel.getStoredRouteImages(routeID: selectedRouteID)
                         
+                        // Get the sections for this route
+                        // Get Sections
+                        self.sectionsArray = self.sectionModel.getSections(selectedRouteID)
+                        // Get Section Images
+                        self.sectionImagesDictArray = self.sectionModel.getSectionImages4Route(selectedRouteID)
+                        
                         self.routeupdated = false
+                        self.storedLabelText = "Using existing saved route."
                         
                         alert.dismiss(animated: true, completion: {
                             self.performSegue(withIdentifier: "showDetail", sender: self)
@@ -303,39 +331,96 @@ class MasterViewController: UITableViewController {
                     } else {
                         
                         // The stored route is NOT the latest version so download the latest version from the server
+                        
+                        // Do NOT delete the current version until a new version has been completely downloaded. This avoids problems with intermittent data connections
+                        //print("Downloading latest version...")
+                        
+                        // Download all parts of route
+                        // Download the route iteself
                         self.selectedRoute  = self.routeModel.getRoute(selectedRouteID)
                         
-                        // Delete any existing version of this route in Core Data
-                        self.routeModel.deleteStoredRoute(routeid: selectedRouteID)
-                        // Delete the previous version of the route markers
-                        self.routeModel.deleteStoredRouteMarkers(routeID: selectedRouteID)
-                        // Delete any existing version of this array from Core Data
-                        self.routeModel.deleteStoredRouteImages(routeID: selectedRouteID)
-                        
-                        // Store the downloaded version and update the version in UserDefaults
-                        self.routeModel.storeRoute(route: self.selectedRoute)
-                        
-                        // Download and store the associated route GPX file
+                        // Download the associated route GPX file
                         // Get the gpx file and parse into the selected route model
                         
                         let gpxfilename = self.selectedRoute.routeGPXFileName
                         //print("gpx file name = \(gpxfilename)")
                         self.selectedRoute.routeMarkers = [NSDictionary]()
-                        self.selectedRoute.routeMarkers = self.routeModel.getMarkers(gpxfilename: gpxfilename)
-                        
-                        // Save the new route markers
-                        self.routeModel.storeRouteMarkers(routeID: selectedRouteID, routeMarkers: self.selectedRoute.routeMarkers)
+                        self.selectedRoute.routeMarkers = self.routeModel.getMarkers(gpxfilename: gpxfilename) 
                         
                         // Get the route images array
                         self.selectedRoute.routeImageDictArray = self.routeModel.getRouteImages(selectedRouteID)
+                        
+                        // Get the sections for this route
+                        // Get Sections
+                        self.sectionsArray = self.sectionModel.getSections(selectedRouteID)
+                        // Get Section Images
+                        self.sectionImagesDictArray = self.sectionModel.getSectionImages4Route(selectedRouteID)
+                        
 
-                        // Store the route images array in Cord Data
-                        self.routeModel.storeRouteImages(routeImagesArray: self.selectedRoute.routeImageDictArray)
+                        // Check if everything has downloaded successfully before deleting the stored route
+                        if ((self.selectedRoute.routeID > 0) && (self.selectedRoute.routeMarkers.count > 0) && (self.selectedRoute.routeImageDictArray.count > 0) && (self.sectionsArray.count > 0) && (self.sectionImagesDictArray.count > 0) ){
+                            // Everything appears to be downloaded successfully so delete the old verions and save the new version
+                            //print("Everything downloaded OK.")
+                            
+                            // Delete any existing version of this route in Core Data
+                            self.routeModel.deleteStoredRoute(routeid: selectedRouteID)
+                            // Delete the previous version of the route markers
+                            self.routeModel.deleteStoredRouteMarkers(routeID: selectedRouteID)
+                            // Delete any existing version of the route images array from Core Data
+                            self.routeModel.deleteStoredRouteImages(routeID: selectedRouteID)
+                            // Delete any existing version of the route sections from Core Data
+                            self.sectionModel.deleteStoredRouteSections(routeID: selectedRouteID)
+                            // Delete any existing version of the route section images from Core Data
+                            self.sectionModel.deleteStoredRouteSectionImages(routeID: selectedRouteID)
+                            
+                            // Now store the new version...
+                            // Store the downloaded version and update the version in UserDefaults
+                            self.routeModel.storeRoute(route: self.selectedRoute)
                         
-                        // Update the stored route verions in UserDefaults
-                        UserDefaults.standard.set(remoterouteversion, forKey: "routeversion" + String(selectedRouteID))
-                        self.routeupdated = true
+                            // Save the new route markers
+                            self.routeModel.storeRouteMarkers(routeID: selectedRouteID, routeMarkers: self.selectedRoute.routeMarkers)
                         
+                            // Store the route images array in Core Data
+                            self.routeModel.storeRouteImages(routeImagesArray: self.selectedRoute.routeImageDictArray)
+                            
+                            // Store the sections for this route in Core Data
+                            self.sectionModel.storeRouteSections(sectionsArray: self.sectionsArray)
+                            
+                            // Store the section images for this route in Core Data
+                            self.sectionModel.storeRouteSectionImages(sectionImagesArray: self.sectionImagesDictArray)
+                        
+                            // Update the stored route verions in UserDefaults
+                            UserDefaults.standard.set(remoterouteversion, forKey: "routeversion" + String(selectedRouteID))
+                            self.storedLabelText = "Using new saved route."
+                            self.routeupdated = true
+                            
+                            
+                        } else {
+                            // Something has NOT downloaded successfully so use the stored version even though it is out of date...
+                            //print("Something did not download properly.")
+                            
+                            // Handle the case where things did NOT download correctly...
+                            //print("Using stored route version...")
+                            
+                            // Get the stored route
+                            self.selectedRoute = self.routeModel.getStoredRoute(routeID: selectedRouteID)
+
+                            // Get the stored route markers
+                            self.selectedRoute.routeMarkers = self.routeModel.getStoredRouteMarkers(routeID: selectedRouteID)
+                            // Get the stored route image array
+                            self.selectedRoute.routeImageDictArray = self.routeModel.getStoredRouteImages(routeID: selectedRouteID)
+                            
+                            // Get the sections for this route
+                            self.sectionsArray = self.sectionModel.getSections(selectedRouteID)
+                            
+                            // Get the section images for this route
+                            self.sectionImagesDictArray = self.sectionModel.getSectionImages4Route(selectedRouteID)
+                            
+                            self.storedLabelText = "Using existing saved route."
+                            self.routeupdated = false
+                            
+                        }
+                                               
                         alert.dismiss(animated: true, completion: {
                             self.performSegue(withIdentifier: "showDetail", sender: self)
                         })
@@ -346,6 +431,7 @@ class MasterViewController: UITableViewController {
                 } else {
                 // There is no internet connection
                     
+                    //print("No internet connection.")
                     // Check if there is a stored version of this route
                     let localrouteversion = UserDefaults.standard.integer(forKey: "routeversion" + String(selectedRouteID))
                     if localrouteversion > 0 {
@@ -353,10 +439,17 @@ class MasterViewController: UITableViewController {
                         
                         //print("local version exists: \(localrouteversion)")
                         self.selectedRoute = self.routeModel.getStoredRoute(routeID: selectedRouteID)
+
                         self.selectedRoute.routeMarkers = self.routeModel.getStoredRouteMarkers(routeID: selectedRouteID)
                         
                         self.selectedRoute.routeImageDictArray = self.routeModel.getStoredRouteImages(routeID: selectedRouteID)
+                        
+                        self.sectionsArray = self.sectionModel.getStoredRouteSections(routeID: selectedRouteID)
+                        
+                        self.sectionImagesDictArray = self.sectionModel.getStoredRouteSectionImages(routeID: selectedRouteID)
+                        
                         self.routeupdated = false
+                        self.storedLabelText = "Using existing saved route."
                         alert.dismiss(animated: true, completion: {
                         self.performSegue(withIdentifier: "showDetail", sender: self)
                         })
@@ -503,7 +596,12 @@ class MasterViewController: UITableViewController {
         return (isReachable && !needsConnection)
     }
 
-
+    func infoButtonTapped(sender: UIBarButtonItem) {
+        
+        self.performSegue(withIdentifier: "showMainInfoSegue", sender: self)
+        
+    }
+    
     
 }
 

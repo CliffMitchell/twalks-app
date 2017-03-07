@@ -17,21 +17,26 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     @IBOutlet var mainView: UIView!
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var detailNavigationBar: UINavigationItem!
-    @IBOutlet weak var sectionController: UISegmentedControl!
     @IBOutlet weak var sectionNameLabel: UILabel!
-
-
-   
+    @IBOutlet weak var storedLabel: UILabel!
+    @IBOutlet weak var detailPageControl: UIPageControl!
+    @IBOutlet weak var toolBar: UIToolbar!
+ 
+    
+    
 
     let indicator: UIActivityIndicatorView = UIActivityIndicatorView()
 
     
     // Route variables
-    // Selected route, routeID, routeImageDictArray and routeupdated are passed from master view controller
+    // These variables are ll passed from master view controller
     var selectedRoute:Route = Route()
     var routeupdated:Bool = false // Flag passed from master view controller to show if the route has been updated
     var routeImageDictArray:[NSDictionary] = [[String:String]]() as [NSDictionary]
-
+    var sectionsArray:[Section] = [Section]()
+    var sectionImagesDictArray:[NSDictionary] = [NSDictionary]()
+    var storedLabelText = ""
+    
     var detailItem: AnyObject? {
         didSet {
             // Update the view.
@@ -55,8 +60,7 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     var sectionsProcessed:Bool = false
     var currentSection:Int = 0
     var numberOfSections:Int = 0
-    var sectionsArray:[Section] = [Section]()
-    var sectionImagesDictArray:[NSDictionary] = [NSDictionary]()
+
     var sectionFileNameArray:[String] = [String]()
     var sectionImageFileNameArray:[String] = [String]()
     var sectionImageCaptionArray:[String] = [String]()
@@ -81,12 +85,21 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     override func viewWillAppear(_ animated: Bool) {
         //detailTableView.reloadData()
         //self.indicator.startAnimating()
+        
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+        storedLabel.text = storedLabelText
+        
+        // Add an Info button to the navigation bar
+        let infoButton = UIButton(type: .infoLight )
+        infoButton.addTarget(self, action: #selector(infoButtonTapped(sender:)), for: .touchDown)
+        let navButtonItem = UIBarButtonItem(customView: infoButton )
+        navigationItem.rightBarButtonItem = navButtonItem
+
         // Set view controller as datasource and delegate
         
         self.detailTableView.delegate = self
@@ -103,7 +116,7 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         // Get the array of route image dictionaries for this route id
         
-        var routeImageDictArray:[NSDictionary] = [[String:String]]() as [NSDictionary]
+        
         routeImageDictArray = selectedRoute.routeImageDictArray
         
         // Format the view
@@ -112,9 +125,14 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         routeDetailLabel = selectedRoute.routeDetails
         numberOfSections = selectedRoute.sectionCount
         
-        // Configure the section controller
-        configureSectionController(self.sectionController)
-        sectionNameLabel.text = "Route overview"
+        // Set the number of pages shown in the Page Control
+        detailPageControl.numberOfPages = numberOfSections + 1
+        
+        if (numberOfSections > 0){
+        sectionNameLabel.text = "Route overview - (1 of " + String(numberOfSections + 1) + ")"
+        } else {
+            sectionNameLabel.text = "Please select a route from the Route List."
+        }
         
         // Loop through the array of route images and add each image to the array of image file names
         var i:Int = 0
@@ -272,140 +290,15 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         //print("Memory warning 2...")
   
     }
-
-    func applySizeConstraintsToImage(_ imageView:UIImageView) {
         
-        // set contstraints for the imageview
-        let heightConstraint:NSLayoutConstraint = NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: CGFloat(imageHeight))
-        
-        imageView.addConstraint(heightConstraint)
-        
-    }
-    
-    
-    func configureSectionController(_ segmentController:UISegmentedControl) {
-        // Configure the segment controller with the number of route sections etc.
-        
-        // Create the correct number of segments
-        
-        segmentController.removeAllSegments()
-        
-        for index in 0...numberOfSections{
-          segmentController.insertSegment(withTitle: String(index), at: index, animated: true)
-        }
-    }
-    
-    
-    @IBAction func sectionChanged(_ sender: AnyObject) {
-        // A section has been selected from the segmented controller
+    func displaySection(sectionID:Int) {
+        // Display the new section selected from the swipe gesture recognizers
         
         // Track the current section
-        currentSection = sectionController.selectedSegmentIndex
+        currentSection = sectionID
         
-        if sectionsProcessed {
-            // Sections for this Route have already been processed so don't process again
-            //NSLog("Sections already processed")
-            
-        } else {
-            // Sections for this Route have not been processed so process them now
-            //NSLog("Sections not processed")
-            
-            // Start activity indicator
-            //NSLog("Starting")
-
-            let alert = UIAlertController(title: nil, message: "Loading sections...", preferredStyle: .alert)
-            
-            alert.view.tintColor = UIColor.black
-            let loadingIndicator: UIActivityIndicatorView = UIActivityIndicatorView(frame: CGRect(x:10, y:5, width: 50, height: 50)) as UIActivityIndicatorView
-            loadingIndicator.hidesWhenStopped = true
-            loadingIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
-            loadingIndicator.startAnimating();
-            
-            alert.view.addSubview(loadingIndicator)
-            present(alert, animated: false, completion: nil)
-
-            let globalQueue = DispatchQueue.global(qos: .background)
-            globalQueue.sync {
-                
                 // Process sections for this route
-
-                if connectedToNetwork() {
-                    // There is an active internet connection
-                    //print ("Internet connection OK")
-                    if routeupdated {
-                        // The route has been updated so download and store the new sections
-                        //print("Route has been updated so download new sections...")
-                        
-                        // Get the sections for this route
-                        self.sectionsArray = sectionModel.getSections(routeID)
-                        
-                        // Store the new sections in Core Data
-                        sectionModel.storeRouteSections(sectionsArray: sectionsArray)
-                        
-                        // Get the Section Images for this route
-                        sectionImagesDictArray = self.sectionModel.getSectionImages4Route(routeID)
-                        
-                        // Store the section images in Core Data
-                        sectionModel.storeRouteSectionImages(sectionImagesArray: sectionImagesDictArray)
-                        
-                        sectionsProcessed = true
-                        
-                    } else {
-                        // The route has not been updated so see if there is a stored version
-                        //print("Route not updated so see if there is a stored version")
-                        // Load stored version
-                        sectionsArray = sectionModel.getStoredRouteSections(routeID: routeID)
-                        
-                        // If number of records loaded > 0, display stored version
-                        if sectionsArray.count > 0 {
-                            // There is a stored version of the sections for this route so load the stored section images
-                            //print("Stored version found...")
-                            sectionImagesDictArray = sectionModel.getSectionImages4Route(routeID)
-                            
-                            sectionsProcessed = true
-                            
-                        } else {
-                            // There is no stored version of the sections for this route
-                            // No records loaded so download sections from server
-                            // Get the sections for this route
-                            //print("No stored version found so download the sections for this route...")
-                            self.sectionsArray = sectionModel.getSections(routeID)
-                            
-                            // Store the new sections in Core Data
-                            sectionModel.storeRouteSections(sectionsArray: sectionsArray)
-                            
-                            // Get the Section Images for this route
-                            sectionImagesDictArray = self.sectionModel.getSectionImages4Route(routeID)
-                            
-                            // Store the section images in Core Data
-                            sectionModel.storeRouteSectionImages(sectionImagesArray: sectionImagesDictArray)
-                            
-                            sectionsProcessed = true
-                            
-                        } // End of if there is a stored version of sections
-                        
-                    }
-                    
-                } else {
-                    // There is no active internet connection
-                    //print("There is no active internet connection...")
-                    // Try and load a stored version
-                    sectionsArray = sectionModel.getStoredRouteSections(routeID: routeID)
-                    // If number of records loaded > 0, display stored version
-                    if sectionsArray.count > 0 {
-                        // There is a stored version of the sections for this route so load the stored section images
-                        sectionImagesDictArray = sectionModel.getStoredRouteSectionImages(routeID: routeID)
-                        
-                        sectionsProcessed = true
-                        
-                    } else {
-                        // There is no stored version and no internet connection 
-                        // An empty sectionsArray will be carried forward
-                        //print("No internet, no stored sections...")
-                    }
-                    
-                } // End of test for internet connection
-                
+        
                 self.numberOfImagesInSection = [Int](repeating: 0, count: self.numberOfSections)
 
                 // Loop through the array of Section images and add each image to the array of image file names
@@ -414,7 +307,7 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 var i:Int = -1
                 var sectionID:Int = 0
                 var currentSectionID:Int = 0
-                for image in sectionImagesDictArray {
+                for image in self.sectionImagesDictArray {
                     
                     // Get the section id
                     currentSectionID = Int(image["fk_idSection"] as! String)!
@@ -459,22 +352,11 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
                     }
                     
                 }
-
-                // Stop activity indicator
                 
-                //NSLog("Finished")
-                DispatchQueue.main.async {
-                    self.indicator.stopAnimating()
-                    alert.dismiss(animated: false, completion: nil)
-                    }
-            } // End of background queue
-
-        
-        }  // End of else - Sections have not been downloaded yet
-        
+                sectionsProcessed = true
 
         // Get the selected section (unless selectedSection = 0 as this is the route overview)
-        if sectionController.selectedSegmentIndex > 0 {
+        if currentSection > 0 {
             // Check if any sections have been returned (possible lack of internet connectivity on first time access of sections
             if sectionsArray.count > 0 {
             
@@ -482,7 +364,7 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
             
             sectionName = selectedSection.sectionName
             sectionDesc = selectedSection.sectionDesc
-            sectionNameLabel.text = sectionName
+            sectionNameLabel.text = sectionName + " - (" + String(currentSection + 1) + " of " + String(numberOfSections + 1) + ")"
         
             // Display the selected section
 
@@ -491,18 +373,14 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
             } else {
                 // No sections have been found so report an error
                 //print("No sections returned so go to detail error segue....")
-                // This generates a warning about attempting to dismiss while presentation or dismiss is in progress but I can't get rid of this!
-                self.dismiss(animated: false, completion: {
-                    self.performSegue(withIdentifier: "showDetailErrorSegue", sender: self)
-                })
-               
+               self.performSegue(withIdentifier: "showDetailErrorSegue", sender: self)
             }
 
        
         } else {
             // Section 0 (route overview) has been selected
             
-            sectionNameLabel.text = "Route overview"
+            sectionNameLabel.text = "Route overview - (1 of " + String(numberOfSections + 1) + ")"
             detailTableView.numberOfRows(inSection: detailImageFileNameArray.count)
             self.detailTableView.reloadData()
 
@@ -541,32 +419,56 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
             destinationViewController.errorLabelText = "It looks like there is no active internet connection and no stored version of the sections for this route is available. Please try again when you have an internet connection."
         }
         
+        if segue.identifier == "showInfoSegue" {
+            let destinationViewController = segue.destination as! InfoViewController
+            destinationViewController.title = "TWalks Info"
+            
+        }
+        
     }
     
-    func connectedToNetwork() -> Bool {
-        // Function to check if there is an active internet connection
-        var zeroAddress = sockaddr_in()
-        zeroAddress.sin_len = UInt8(MemoryLayout<sockaddr_in>.size)
-        zeroAddress.sin_family = sa_family_t(AF_INET)
+    @IBAction func swipeLeftHandler(_ sender: Any) {
         
-        guard let defaultRouteReachability = withUnsafePointer(to: &zeroAddress, {
-            $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
-                SCNetworkReachabilityCreateWithAddress(nil, $0)
-            }
-        }) else {
-            return false
+        if (currentSection < numberOfSections) {
+            currentSection = currentSection + 1
+            //print(currentSection)
+            detailPageControl.currentPage = currentSection
+            //PageLabel.text = String(currentpage)
+            // Display the chosen section
+            displaySection(sectionID: currentSection)
+            
+        } else {
+            //PageLabel.text = "No more pages."
+            //print("No more pages.")
         }
         
-        var flags: SCNetworkReachabilityFlags = []
-        if !SCNetworkReachabilityGetFlags(defaultRouteReachability, &flags) {
-            return false
-        }
-        
-        let isReachable = flags.contains(.reachable)
-        let needsConnection = flags.contains(.connectionRequired)
-        
-        return (isReachable && !needsConnection)
     }
+    
+    @IBAction func swipeRightHandler(_ sender: Any) {
+        
+        if (currentSection > 0) {
+            currentSection = currentSection - 1
+            //print(currentSection)
+            detailPageControl.currentPage = currentSection
+            //PageLabel.text = String(currentSection)
+            // Display the chosen section
+            displaySection(sectionID: currentSection)
+            
+        } else {
+            //PageLabel.text = "No more pages."
+            //print("No more pages.")
+        }
+        
+        
+    }
+    
+    func infoButtonTapped(sender: UIBarButtonItem) {
+        
+        self.performSegue(withIdentifier: "showInfoSegue", sender: self)
+        
+    }
+    
+    
 
 }
 

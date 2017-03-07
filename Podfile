@@ -10,7 +10,6 @@ target 'TWalks' do
 
 source 'https://github.com/CocoaPods/Specs.git'
 
-pod 'ImageScrollView’, ‘~> 1.3’
 pod 'Kingfisher', '~> 3.0'
 
 

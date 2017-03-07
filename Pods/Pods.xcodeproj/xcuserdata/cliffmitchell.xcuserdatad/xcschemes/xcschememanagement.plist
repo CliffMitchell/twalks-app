@@ -4,11 +4,6 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>ImageScrollView.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>Kingfisher.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -32,12 +27,7 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>4D94A3909F870C7B7DF7225497BA74EE</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>B1FBB3DA549F4E64345B3BB249177450</key>
+		<key>1E3321AD2F05086A3267992C5EA82A40</key>
 		<dict>
 			<key>primary</key>
 			<true/>

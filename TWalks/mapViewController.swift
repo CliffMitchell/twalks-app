@@ -37,7 +37,7 @@ class mapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         switch authorizationstatus {
         case CLAuthorizationStatus.denied:
             // Tell the user their location cannot be shown
-            let alertController:UIAlertController = UIAlertController(title: "Dismiss", message: "You have denied access to location services so we cannot show your location.", preferredStyle: UIAlertControllerStyle.alert)
+            let alertController:UIAlertController = UIAlertController(title: "Dismiss", message: "You have denied access to location services so we cannot show your location.\n\nTo enable Location Services for this app go to Settings > Privacy > Location Services > TWalks and select 'While Using the App'", preferredStyle: UIAlertControllerStyle.alert)
             alertController.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.default, handler: nil))
             self.present(alertController, animated: true, completion: nil)
             
@@ -191,7 +191,7 @@ class mapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == CLAuthorizationStatus.denied {
             // Tell the user their location cannot be tracked
-            let alertController:UIAlertController = UIAlertController(title: "Dismiss", message: "You have denied access to location services so we cannot show your location.", preferredStyle: UIAlertControllerStyle.alert)
+            let alertController:UIAlertController = UIAlertController(title: "Dismiss", message: "You have denied access to location services so we cannot show your location.\n\nTo enable Location Services for this app go to Settings > Privacy > Location Services > TWalks and select 'While Using the App'", preferredStyle: UIAlertControllerStyle.alert)
             alertController.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.default, handler: nil))
             self.present(alertController, animated: true, completion: nil)
    

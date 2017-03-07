@@ -141,7 +141,8 @@ class SectionModel: NSObject {
     func getContext() -> NSManagedObjectContext {
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        return appDelegate.persistentContainer.viewContext
+        
+        return appDelegate.persistentContainer.newBackgroundContext()
     }
     
     func storeRouteSections(sectionsArray:[Section]) {
@@ -290,7 +291,7 @@ class SectionModel: NSObject {
             let retrievedSectionImagesArray = try context.fetch(fetchRequest)
             for sectionImage in retrievedSectionImagesArray {
                 // Create section image object
-                let sectionImageObject: Section = Section()
+               // let sectionImageObject: Section = Section()
 
                 // Assign the value of each key value pair to the route object
                 var thisSectionImage:[String:String] = [String:String]()

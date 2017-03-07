@@ -19,6 +19,7 @@
 		D42367881C0F7A92005C9F4A /* TWalksTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42367871C0F7A92005C9F4A /* TWalksTests.swift */; };
 		D42367931C0F7A92005C9F4A /* TWalksUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42367921C0F7A92005C9F4A /* TWalksUITests.swift */; };
 		D43642441E08815A00EDB74A /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D43642431E08815A00EDB74A /* MapKit.framework */; };
+		D43FCD5E1E68648C00F6A38E /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43FCD5D1E68648C00F6A38E /* InfoViewController.swift */; };
 		D4423BF21E423DA40024E85F /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4423BF11E423DA40024E85F /* CoreData.framework */; };
 		D4423BF51E423E410024E85F /* routesdb.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D4423BF31E423E410024E85F /* routesdb.xcdatamodeld */; };
 		D45048C81D9176AB00CDA7A0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D45048C61D9176AB00CDA7A0 /* Main.storyboard */; };
@@ -77,6 +78,7 @@
 		D42367921C0F7A92005C9F4A /* TWalksUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TWalksUITests.swift; sourceTree = "<group>"; };
 		D42367941C0F7A92005C9F4A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D43642431E08815A00EDB74A /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		D43FCD5D1E68648C00F6A38E /* InfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
 		D4423BF11E423DA40024E85F /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		D4423BF41E423E410024E85F /* routesdb.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = routesdb.xcdatamodel; sourceTree = "<group>"; };
 		D45048C71D9176AB00CDA7A0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -185,6 +187,7 @@
 				D4C6BE0F1E0AC7B20033CA1A /* mapViewController.swift */,
 				D45048CB1D917CD900CDA7A0 /* imageZoomViewController.swift */,
 				D41EB8A11E54D23D00129D5E /* ErrorViewController.swift */,
+				D43FCD5D1E68648C00F6A38E /* InfoViewController.swift */,
 				D467A00B1C1E02F200CAB8D2 /* Route.swift */,
 				D467A00D1C1E03F400CAB8D2 /* RouteModel.swift */,
 				D45C604C1D775380007E6B8D /* Section.swift */,
@@ -493,6 +496,7 @@
 				D42367731C0F7A92005C9F4A /* MasterViewController.swift in Sources */,
 				D467A00C1C1E02F200CAB8D2 /* Route.swift in Sources */,
 				D4C6BE101E0AC7B20033CA1A /* mapViewController.swift in Sources */,
+				D43FCD5E1E68648C00F6A38E /* InfoViewController.swift in Sources */,
 				D47DAC671C14A68D00931696 /* customRouteCell.swift in Sources */,
 				D45048CC1D917CD900CDA7A0 /* imageZoomViewController.swift in Sources */,
 				D45C604D1D775380007E6B8D /* Section.swift in Sources */,
@@ -654,7 +658,7 @@
 				INFOPLIST_FILE = TWalks/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.CWM.TWalks;
+				PRODUCT_BUNDLE_IDENTIFIER = com.turuncwalks.TWalks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -672,7 +676,7 @@
 				INFOPLIST_FILE = TWalks/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.CWM.TWalks;
+				PRODUCT_BUNDLE_IDENTIFIER = com.turuncwalks.TWalks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
